@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz - Ritual da Energia</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="quiz-header">
+        <div class="quiz-header-content">
+            <div class="quiz-header-top">
+                <h1 class="quiz-title ritual-title">Ritual da Energia</h1>
+                <p class="quiz-progress-text">
+                        Pergunta <span id="currentQuestionNum">1</span> de <span id="totalQuestions">8</span>
+                    </p>
+                </div>
+            </div>
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="quiz-content">
+        <div class="question-container" id="questionContainer">
+            <!-- Conteúdo será inserido pelo JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                id: 1,
+                question: "Como você se sente ao acordar?",
+                image: "quiz1.png",
+                options: [
+                    "Exausto(a), como se não tivesse dormido.",
+                    "Meio sonolento(a), mas levanto mesmo sem vontade.",
+                    "Depende do dia — às vezes bem, às vezes cansado(a).",
+                    "Disposto(a) e com vontade de começar o dia."
+                ]
+            },
+            {
+                id: 2,
+                question: "O quanto você depende de café, energéticos ou açúcar para “funcionar”?",
+                image: "quiz2.png",
+                options: [
+                    "Não vivo sem — é o que me mantém de pé.",
+                    "Preciso várias vezes ao dia pra me manter ativo(a).",
+                    "Só uso quando o cansaço aperta.",
+                    "Raramente preciso disso."
+                ]
+            },
+            {
+                id: 3,
+                question: "Como está sua mente ultimamente?",
+                image: "quiz3.png",
+                options: [
+                    "Sempre acelerada, cheia de pensamentos e preocupações.",
+                    "Fico distraído(a) e perco o foco com facilidade.",
+                    "Tenho momentos de clareza, mas ainda sinto ansiedade.",
+                    "Consigo manter calma e foco na maior parte do tempo."
+                ]
+            },
+            {
+                id: 4,
+                question: "Como você descreveria seu estado emocional nos últimos dias?",
+                image: "quiz4.jpeg",
+                options: [
+                    "Sem ânimo, nada parece me motivar.",
+                    "Sinto tristeza e esgotamento frequente.",
+                    "Sinto tristeza e esgotamento frequente.",
+                    "Sinto-me equilibrado(a) e otimista."
+                ]
+            },
+            {
+                id: 5,
+                question: "Durante o dia, você sente que está vivendo no “modo automático”?",
+                image: "quiz5.png",
+                options: [
+                    "Sim, faço tudo no piloto automático.",
+                    "Quase sempre, é raro sentir prazer nas tarefas.",
+                    "Às vezes me pego assim, mas tento mudar.",
+                    "Não, vivo o presente e tenho clareza do que faço."
+                ]
+            },
+            {
+                id: 6,
+                question: "Como está sua disposição física nas últimas semanas?",
+                image: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800&auto=format&fit=crop",
+                options: [
+                    "Fraca — me sinto pesado(a) e cansado(a).",
+                    "Os dias são um esforço constante.",
+                    "Tenho disposição moderada, mas oscila muito.",
+                    "Boa — sinto energia e vitalidade."
+                ]
+            },
+            {
+                id: 7,
+                question: "Como estão suas noites de sono?",
+                image: "quiz6.png",
+                options: [
+                    "Durmo mal, acordo cansado(a) e com a mente ativa.",
+                    "Até durmo, mas nunca acordo revigorado(a).",
+                    "Durmo bem em alguns dias, mal em outros.",
+                    "Durmo bem e acordo leve."
+                ]
+            },
+            {
+                id: 8,
+                question: "Se você pudesse descrever sua energia hoje, qual seria?",
+                image: "quiz8.png",
+                options: [
+                    "Fraca — sinto que estou no limite.",
+                    "Instável — alguns dias bons, outros ruins.",
+                    "Boa — mas poderia ser melhor.",
+                    "Alta — me sinto cheio(a) de vida e motivação."
+                ]
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let answers = [];
+
+        function renderQuestion() {
+            const question = questions[currentQuestionIndex];
+            const container = document.getElementById('questionContainer');
+            const totalQuestions = questions.length;
+            
+            document.getElementById('currentQuestionNum').textContent = currentQuestionIndex + 1;
+            document.getElementById('totalQuestions').textContent = totalQuestions;
+            const progress = ((currentQuestionIndex + 1) / totalQuestions) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+            
+            container.innerHTML = `
+                <div class="question-image animate-fade-in">
+                    <img src="${question.image}" alt="Question ${question.id}">
+                </div>
+                <div class="question-content">
+                    <h2 class="question-text">${question.question}</h2>
+                    <div class="options-container">
+                        ${question.options.map((option, index) => `
+                            <button class="option-button" onclick="selectAnswer(${index})">
+                                <span>${option}</span>
+                                <span id="arrow-${index}" style="display: none;">→</span>
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function selectAnswer(optionIndex) {
+            const buttons = document.querySelectorAll('.option-button');
+            buttons.forEach((btn, idx) => {
+                if (idx === optionIndex) {
+                    btn.classList.add('selected');
+                    document.getElementById(`arrow-${idx}`).style.display = 'inline';
+                }
+            });
+            
+            answers.push(optionIndex);
+            
+            setTimeout(() => {
+                if (currentQuestionIndex < questions.length - 1) {
+                    currentQuestionIndex++;
+                    renderQuestion();
+                } else {
+                    window.location.href = 'result.html';
+                }
+            }, 600);
+        }
+
+        renderQuestion();
+    </script>
+</body>
+</html>
